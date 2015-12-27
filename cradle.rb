@@ -108,16 +108,16 @@ end
 
 # Internal: Recognize and Translate an Add
 def add
-  match '+'
+  match "+"
   term
-  emitln 'addl %ebx, %eax'
+  emitln "addl %ebx, %eax"
 end
 
 # Internal: Recognize and Translate a Subtract
 def subtract
-  match '-'
+  match "-"
   term
-  emitln 'subl %ebx, %eax'
+  emitln "subl %ebx, %eax"
 end
 
 # Internal: Parse and Translate an Expression
@@ -125,9 +125,9 @@ def expression
   term
   emitln "movl %eax, %ebx"
   case $lookahead
-  when '+'
+  when "+"
     add
-  when '-'
+  when "-"
     subtract
   else
     expected "Addop"
