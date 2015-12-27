@@ -117,7 +117,7 @@ end
 
 def multiply
   match "*"
-  comment "/"
+  comment "*"
   factor
   emitln "imull %esp, %eax"
 end
@@ -127,7 +127,7 @@ def divide
   comment "/"
   factor
   emitln "movl %esp, %ebx"
-  emitln "divl %ebx, %eax"
+  emitln "idivl %ebx, %eax"
 end
 
 # Internal: Parse and Translate a Math Expression.
