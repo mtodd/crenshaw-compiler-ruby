@@ -118,6 +118,7 @@ def subtract
   match "-"
   term
   emitln "subl %ebx, %eax"
+  emitln "neg %eax"
 end
 
 # Internal: Parse and Translate an Expression
