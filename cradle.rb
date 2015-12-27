@@ -103,14 +103,22 @@ def emitln(s, out: $output)
    out.puts
 end
 
+def comment(s, out: $output)
+  emit("# #{s}", out: out)
+  out.puts
+end
+
 # Internal: Parse and Translate a Math Expression.
 def term
-  emitln "movl $#{get_num}, %eax"
+  num = get_num
+  comment num
+  emitln "movl $#{num}, %eax"
 end
 
 # Internal: Recognize and Translate an Add
 def add
   match "+"
+  comment "+"
   term
   emitln "addl %esp, %eax"
 end
@@ -118,6 +126,7 @@ end
 # Internal: Recognize and Translate a Subtract
 def subtract
   match "-"
+  comment "-"
   term
   emitln "subl %esp, %eax"
   emitln "neg %eax"
