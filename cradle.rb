@@ -112,14 +112,14 @@ end
 def add
   match "+"
   term
-  emitln "addl %ebx, %eax"
+  emitln "addl %esp, %eax"
 end
 
 # Internal: Recognize and Translate a Subtract
 def subtract
   match "-"
   term
-  emitln "subl %ebx, %eax"
+  emitln "subl %esp, %eax"
   emitln "neg %eax"
 end
 
@@ -129,7 +129,7 @@ end
 def expression
   term
   while ADDOPS.include?($lookahead)
-    emitln "movl %eax, %ebx"
+    emitln "movl %eax, %esp"
     case $lookahead
     when "+"
       add
