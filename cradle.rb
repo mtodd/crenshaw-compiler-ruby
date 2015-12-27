@@ -117,12 +117,14 @@ end
 
 def multiply
   match "*"
+  comment "/"
   factor
   emitln "imull %esp, %eax"
 end
 
 def divide
   match "/"
+  comment "/"
   factor
   emitln "movl %esp, %ebx"
   emitln "divl %ebx, %eax"
