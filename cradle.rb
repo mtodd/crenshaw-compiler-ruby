@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 ADDOPS = %w(+ -)
+MULOPS = %w(* /)
 
 TAB = "\t"
 
@@ -108,11 +109,41 @@ def comment(s, out: $output)
   out.puts
 end
 
-# Internal: Parse and Translate a Math Expression.
-def term
+def factor
   num = get_num
   comment num
   emitln "movl $#{num}, %eax"
+end
+
+def multiply
+  match "*"
+  factor
+  emitln "imull %esp, %eax"
+end
+
+def divide
+  match "/"
+  factor
+  emitln "movl %esp, %ebx"
+  emitln "divl %ebx, %eax"
+end
+
+# Internal: Parse and Translate a Math Expression.
+#
+#   <term> ::= <factor>  [ <mulop> <factor> ]*
+def term
+  factor
+  while MULOPS.include?($lookahead)
+    emitln "movl %eax, %esp"
+    case $lookahead
+    when "*"
+      multiply
+    when "/"
+      divide
+    else
+      expected "mulop"
+    end
+  end
 end
 
 # Internal: Recognize and Translate an Add
