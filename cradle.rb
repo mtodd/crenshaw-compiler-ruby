@@ -90,8 +90,36 @@ def emitln(s, out: $output)
 end
 
 # Internal: Parse and Translate a Math Expression.
-def expression
+def term
   emitln "movl $#{get_num}, %eax"
+end
+
+# Internal: Recognize and Translate an Add
+def add
+  match '+'
+  term
+  emitln 'addl %ebx, %eax'
+end
+
+# Internal: Recognize and Translate a Subtract
+def subtract
+  match '-'
+  term
+  emitln 'subl %ebx, %eax'
+end
+
+# Internal: Parse and Translate an Expression
+def expression
+  term
+  emitln "movl %eax, %ebx"
+  case $lookahead
+  when '+'
+    add
+  when '-'
+    subtract
+  else
+    expected "Addop"
+  end
 end
 
 def assembler_headers(out: $output)
