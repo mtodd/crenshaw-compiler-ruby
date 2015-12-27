@@ -2,6 +2,18 @@
 
 TAB = "\t"
 
+HEADER = <<-ASM
+.section __TEXT,__text
+.global _main
+_main:
+ASM
+
+FOOTER = <<-ASM
+\tmovl %eax, %edi         # set the exit code to be whatever is %eax
+\tmovl $0x2000001, %eax # system call $1 with $0x2000000 offset
+\tsyscall
+ASM
+
 $input  = STDIN
 $output = STDOUT
 
@@ -122,19 +134,20 @@ def expression
   end
 end
 
-def assembler_headers(out: $output)
-  out.puts <<-ASM
-.section __TEXT,__text
-.global _main
-_main:
-  ASM
+def assembler_header(out: $output)
+  out.puts HEADER
+end
+def assembler_footer(out: $output)
+  out.puts FOOTER
 end
 
 def main
-  assembler_headers
+  assembler_header
 
   lookahead
   expression
+
+  assembler_footer
 
   debug_dump if ENV.key?('DEBUG')
 end
