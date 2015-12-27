@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+ADDOPS = %w(+ -)
+
 TAB = "\t"
 
 HEADER = <<-ASM
@@ -122,16 +124,20 @@ def subtract
 end
 
 # Internal: Parse and Translate an Expression
+#
+#   <expression> ::= <term> [<addop> <term>]*
 def expression
   term
-  emitln "movl %eax, %ebx"
-  case $lookahead
-  when "+"
-    add
-  when "-"
-    subtract
-  else
-    expected "Addop"
+  while ADDOPS.include?($lookahead)
+    emitln "movl %eax, %ebx"
+    case $lookahead
+    when "+"
+      add
+    when "-"
+      subtract
+    else
+      expected "Addop"
+    end
   end
 end
 
