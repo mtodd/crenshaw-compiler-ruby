@@ -91,10 +91,20 @@ end
 
 # Internal: Parse and Translate a Math Expression.
 def expression
-  emitln "MOVE ##{get_num},D0"
+  emitln "movl $#{get_num}, %eax"
+end
+
+def assembler_headers(out: $output)
+  out.puts <<-ASM
+.section __TEXT,__text
+.global _main
+_main:
+  ASM
 end
 
 def main
+  assembler_headers
+
   lookahead
   expression
 
