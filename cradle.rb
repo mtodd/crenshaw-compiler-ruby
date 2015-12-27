@@ -89,14 +89,20 @@ def emitln(s, out: $output)
    out.puts
 end
 
-def debug_dump
-  p [:lookahead, $lookahead]
+# Internal: Parse and Translate a Math Expression.
+def expression
+  emitln "MOVE ##{get_num},D0"
 end
 
 def main
   lookahead
+  expression
 
   debug_dump if ENV.key?('DEBUG')
+end
+
+def debug_dump
+  STDERR.puts [:lookahead, $lookahead].inspect
 end
 
 if $0 == __FILE__
