@@ -12,7 +12,8 @@ _main:
 ASM
 
 FOOTER = <<-ASM
-\tmovl %eax, %edi         # set the exit code to be whatever is %eax
+\t# exit with the result as %eax
+\tmovl %eax, %edi       # set the exit code into %edi
 \tmovl $0x2000001, %eax # system call $1 with $0x2000000 offset
 \tsyscall
 ASM
@@ -204,9 +205,12 @@ end
 
 def assembler_header(out: $output)
   out.puts HEADER
+  out.puts
 end
+
 def assembler_footer(out: $output)
   comment "return current sum as exit code"
+  out.puts
   out.puts FOOTER
 end
 
