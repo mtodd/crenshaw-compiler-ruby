@@ -206,6 +206,7 @@ def assembler_header(out: $output)
   out.puts HEADER
 end
 def assembler_footer(out: $output)
+  comment "return current sum as exit code"
   out.puts FOOTER
 end
 
