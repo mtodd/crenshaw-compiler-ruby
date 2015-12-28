@@ -119,15 +119,27 @@ def multiply
   match "*"
   comment "*"
   factor
-  emitln "imull %esp, %eax"
+  emitln "imul %esp, %eax"
 end
 
+# Internal: Divide the dividend on the stack with the divisor in %eax.
+#
+# > Division requires special arrangements
+# source: https://www.lri.fr/~filliatr/ens/compil/x86-64.pdf
+#
+# Division requires the divisor to be in %eax *and* %edx. Since we're only
+# worried about 32bit values (right now), we put our 32bit value on the stack
+# (%esp) into %eax and use cltd to convert the long into a double long. But
+# first we move the divisor into %ebx because it's available and we need to
+# make %eax available for the dividend.
 def divide
   match "/"
   comment "/"
   factor
-  emitln "movl %esp, %ebx"
-  emitln "idivl %ebx, %eax"
+  emitln "movl %eax, %ebx"
+  emitln "movl %esp, %eax"
+  emitln "cltd"
+  emitln "idivl %ebx"
 end
 
 # Internal: Parse and Translate a Math Expression.
