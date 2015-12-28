@@ -9,6 +9,8 @@ HEADER = <<-ASM
 .section __TEXT,__text
 .global _main
 _main:
+\t# make space for one 8byte (64bit) value
+\tsubq $0x8, %rsp
 ASM
 
 FOOTER = <<-ASM
@@ -127,7 +129,7 @@ def multiply
   match "*"
   comment "*"
   factor
-  emitln "imul %esp, %eax"
+  emitln "imul -0x8(%rsp), %eax"
 end
 
 # Internal: Divide the dividend on the stack with the divisor in %eax.
@@ -137,15 +139,17 @@ end
 #
 # Division requires the divisor to be in %eax *and* %edx. Since we're only
 # worried about 32bit values (right now), we put our 32bit value on the stack
-# (%esp) into %eax and use cltd to convert the long into a double long. But
+# -0x8(%rsp) into %eax and use cltd to convert the long into a double long. But
 # first we move the divisor into %ebx because it's available and we need to
 # make %eax available for the dividend.
+#
+# Division leaves the value in %eax and nothing on the stack.
 def divide
   match "/"
   comment "/"
   factor
   emitln "movl %eax, %ebx"
-  emitln "movl %esp, %eax"
+  emitln "movl -0x8(%rsp), %eax"
   emitln "cltd"
   emitln "idivl %ebx"
 end
@@ -156,7 +160,7 @@ end
 def term
   factor
   while MULOPS.include?($lookahead)
-    emitln "movl %eax, %esp"
+    emitln "movl %eax, -0x8(%rsp)"
     case $lookahead
     when "*"
       multiply
@@ -173,7 +177,7 @@ def add
   match "+"
   comment "+"
   term
-  emitln "addl %esp, %eax"
+  emitln "addl -0x8(%rsp), %eax"
 end
 
 # Internal: Recognize and Translate a Subtract
@@ -181,7 +185,7 @@ def subtract
   match "-"
   comment "-"
   term
-  emitln "subl %esp, %eax"
+  emitln "subl -0x8(%rsp), %eax"
   emitln "neg %eax"
 end
 
@@ -191,7 +195,7 @@ end
 def expression
   term
   while ADDOPS.include?($lookahead)
-    emitln "movl %eax, %esp"
+    emitln "movl %eax, -0x8(%rsp)"
     case $lookahead
     when "+"
       add
