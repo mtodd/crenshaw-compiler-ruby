@@ -109,10 +109,17 @@ def comment(s, out: $output)
   out.puts
 end
 
+# <factor> ::= (<expression>)
 def factor
-  num = get_num
-  comment num
-  emitln "movl $#{num}, %eax"
+  if $lookahead == '('
+    match "("
+    expression
+    match ")"
+  else
+    num = get_num
+    comment num
+    emitln "movl $#{num}, %eax"
+  end
 end
 
 def multiply
