@@ -211,14 +211,14 @@ def expression
 end
 
 def alloc_stack
-  comment "make space for one 8byte (64bit) value"
-  emitln "subq $0x8, %rsp"
-
   $stackdepth += 1
+
+  comment "make space for 8byte (64bit) value at #{$stackdepth}"
+  emitln "subq $0x8, %rsp"
 end
 
 def free_stack
-  comment "free space for one 8byte (64bit) value"
+  comment "free space for 8byte (64bit) value at #{$stackdepth}"
   emitln "addq $0x8, %rsp"
 
   $stackdepth -= 1
@@ -226,7 +226,6 @@ end
 
 def assembler_header(out: $output)
   out.puts HEADER
-  out.puts
 end
 
 def assembler_footer(out: $output)
