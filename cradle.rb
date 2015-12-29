@@ -115,7 +115,7 @@ def comment(s, out: $output)
   out.puts
 end
 
-#   <factor> ::= <number> | (<expression>)
+#   <factor> ::= <number> | (<expression>) | <variable>
 def factor
   if $lookahead == '('
     match "("
