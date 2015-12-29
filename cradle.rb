@@ -69,6 +69,10 @@ def is_digit(c)
   c =~ /[0-9]/
 end
 
+def is_addop(c)
+  ADDOPS.include?(c)
+end
+
 # Internal: Get an Identifier, and looks up the next character.
 #
 # Returns the alpha character String (upcased).
@@ -196,13 +200,13 @@ end
 #
 #   <expression> ::= <term> [<addop> <term>]*
 def expression
-  if ADDOPS.include?($lookahead)
+  if is_addop($lookahead)
     emitln "xor %eax, %eax"
   else
     term
   end
 
-  while ADDOPS.include?($lookahead)
+  while is_addop($lookahead)
     emitln "movl %eax, -(0x8*#{$stackdepth})(%rsp)"
     case $lookahead
     when "+"
