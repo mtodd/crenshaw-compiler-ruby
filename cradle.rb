@@ -197,7 +197,7 @@ end
 #   <expression> ::= <term> [<addop> <term>]*
 def expression
   if ADDOPS.include?($lookahead)
-    emitln "movl $0x0, %eax"
+    emitln "xor %eax, %eax"
   else
     term
   end
