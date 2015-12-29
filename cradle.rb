@@ -117,8 +117,10 @@ end
 def factor
   if $lookahead == '('
     match "("
+    comment "("
     expression
     match ")"
+    comment ")"
   else
     num = get_num
     comment num
@@ -214,7 +216,6 @@ def assembler_header(out: $output)
 end
 
 def assembler_footer(out: $output)
-  comment "return current sum as exit code"
   out.puts
   out.puts FOOTER
 end
