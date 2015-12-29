@@ -24,6 +24,7 @@ $input  = STDIN
 $output = STDOUT
 
 $lookahead = nil
+$stackdepth = 1
 
 # Internal: Read a character from input stream
 def lookahead(input: $input)
@@ -129,7 +130,7 @@ def multiply
   match "*"
   comment "*"
   factor
-  emitln "imul -0x8(%rsp), %eax"
+  emitln "imul -(0x8*#{$stackdepth})(%rsp), %eax"
 end
 
 # Internal: Divide the dividend on the stack with the divisor in %eax.
@@ -149,7 +150,7 @@ def divide
   comment "/"
   factor
   emitln "movl %eax, %ebx"
-  emitln "movl -0x8(%rsp), %eax"
+  emitln "movl -(0x8*#{$stackdepth})(%rsp), %eax"
   emitln "cltd"
   emitln "idivl %ebx"
 end
@@ -160,7 +161,7 @@ end
 def term
   factor
   while MULOPS.include?($lookahead)
-    emitln "movl %eax, -0x8(%rsp)"
+    emitln "movl %eax, -(0x8*#{$stackdepth})(%rsp)"
     case $lookahead
     when "*"
       multiply
@@ -177,7 +178,7 @@ def add
   match "+"
   comment "+"
   term
-  emitln "addl -0x8(%rsp), %eax"
+  emitln "addl -(0x8*#{$stackdepth})(%rsp), %eax"
 end
 
 # Internal: Recognize and Translate a Subtract
@@ -185,7 +186,7 @@ def subtract
   match "-"
   comment "-"
   term
-  emitln "subl -0x8(%rsp), %eax"
+  emitln "subl -(0x8*#{$stackdepth})(%rsp), %eax"
   emitln "neg %eax"
 end
 
@@ -195,7 +196,7 @@ end
 def expression
   term
   while ADDOPS.include?($lookahead)
-    emitln "movl %eax, -0x8(%rsp)"
+    emitln "movl %eax, -(0x8*#{$stackdepth})(%rsp)"
     case $lookahead
     when "+"
       add
