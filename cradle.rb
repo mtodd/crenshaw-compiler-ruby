@@ -9,8 +9,6 @@ HEADER = <<-ASM
 .section __TEXT,__text
 .global _main
 _main:
-\t# make space for one 8byte (64bit) value
-\tsubq $0x8, %rsp
 ASM
 
 FOOTER = <<-ASM
@@ -118,7 +116,9 @@ def factor
   if $lookahead == '('
     match "("
     comment "("
+    alloc_stack
     expression
+    free_stack
     match ")"
     comment ")"
   else
@@ -210,6 +210,20 @@ def expression
   end
 end
 
+def alloc_stack
+  comment "make space for one 8byte (64bit) value"
+  emitln "subq $0x8, %rsp"
+
+  $stackdepth += 1
+end
+
+def free_stack
+  comment "free space for one 8byte (64bit) value"
+  emitln "addq $0x8, %rsp"
+
+  $stackdepth -= 1
+end
+
 def assembler_header(out: $output)
   out.puts HEADER
   out.puts
@@ -222,6 +236,7 @@ end
 
 def main
   assembler_header
+  alloc_stack
 
   lookahead
   expression
