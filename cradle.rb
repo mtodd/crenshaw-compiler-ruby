@@ -117,7 +117,8 @@ end
 
 #   <factor> ::= <number> | (<expression>) | <variable>
 def factor
-  if $lookahead == '('
+  case
+  when $lookahead == '('
     match "("
     comment "("
     alloc_stack
@@ -125,6 +126,10 @@ def factor
     free_stack
     match ")"
     comment ")"
+  when is_alpha($lookahead)
+    name = get_name
+    comment name
+    emitln "movl #{name}(%rip), %eax"
   else
     num = get_num
     comment num
