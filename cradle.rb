@@ -196,7 +196,12 @@ end
 #
 #   <expression> ::= <term> [<addop> <term>]*
 def expression
-  term
+  if ADDOPS.include?($lookahead)
+    emitln "movl $0x0, %eax"
+  else
+    term
+  end
+
   while ADDOPS.include?($lookahead)
     emitln "movl %eax, -(0x8*#{$stackdepth})(%rsp)"
     case $lookahead
