@@ -22,7 +22,7 @@ $input  = STDIN
 $output = STDOUT
 
 $lookahead = nil
-$stackdepth = 1
+$stackdepth = 0
 
 # Internal: Read a character from input stream
 def lookahead(input: $input)
