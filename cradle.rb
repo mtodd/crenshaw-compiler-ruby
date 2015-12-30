@@ -50,6 +50,7 @@ end
 def match(x)
   if $lookahead == x
     lookahead
+    skip_white
   else
     expected x
   end
@@ -76,6 +77,14 @@ def is_alnum(c)
   is_alpha(c) || is_digit(c)
 end
 
+# Internal: Recognize whitespace.
+#
+# Returns true if the string character is a whitespace character.
+def is_white(c)
+  # c =~ /\s/
+  ["\t", " "].include?(c)
+end
+
 def is_addop(c)
   ADDOPS.include?(c)
 end
@@ -93,6 +102,8 @@ def get_name
     lookahead
   end
 
+  skip_white
+
   "_#{token}"
 end
 
@@ -109,7 +120,15 @@ def get_num
     lookahead
   end
 
+  skip_white
+
   value
+end
+
+def skip_white
+  while is_white($lookahead)
+    lookahead
+  end
 end
 
 # Internal: Output a String with Tab
@@ -309,12 +328,19 @@ def assembler_footer(out: $output)
   out.puts FOOTER
 end
 
+def init
+  alloc_stack
+  lookahead
+  skip_white
+end
+
 def main
   assembler_header
-  alloc_stack
 
-  lookahead
+  init
+
   assignment
+
   return expected("Newline") if $lookahead != "\n"
 
   assembler_footer
