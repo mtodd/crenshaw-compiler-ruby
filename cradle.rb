@@ -110,6 +110,18 @@ def emitln(s, out: $output)
    out.puts
 end
 
+def emit_section(section, out: $output)
+  case section
+  when :data
+    out.print(".section __DATA,__data")
+  when :text
+    out.print(".section __TEXT,__text")
+  else
+    expected ":data, :text section"
+  end
+  out.puts
+end
+
 def comment(s, out: $output)
   emit("# #{s}", out: out)
   out.puts
@@ -129,12 +141,22 @@ def factor
   when is_alpha($lookahead)
     name = get_name
     comment name
+    define_variable name # defaults to 0
     emitln "movl #{name}(%rip), %eax"
   else
     num = get_num
     comment num
     emitln "movl $#{num}, %eax"
   end
+end
+
+# FIXME: figure out a better way to define variables when needed, see if we can
+# define the label/symbol without setting a default value, and maybe validate
+# that they've been assigned before being used in the first place.
+def define_variable(name)
+  emit_section :data
+  emit "#{name}: .long 0x0\n"
+  emit_section :text
 end
 
 def multiply
