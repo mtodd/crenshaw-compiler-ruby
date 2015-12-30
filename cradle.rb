@@ -100,13 +100,16 @@ end
 #
 # Returns the digit character String.
 def get_num
-  la = $lookahead
+  value = ""
 
-  return expected("Integer") unless is_digit(la)
+  return expected("Integer") unless is_digit($lookahead)
 
-  lookahead
+  while is_digit($lookahead)
+    value << $lookahead
+    lookahead
+  end
 
-  la
+  value
 end
 
 # Internal: Output a String with Tab
