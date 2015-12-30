@@ -127,6 +127,22 @@ def comment(s, out: $output)
   out.puts
 end
 
+def ident
+  name = get_name
+  comment name
+
+  if $lookahead == "("
+    match "("
+    match ")"
+    # FIXME: investigate defining/calling a function and replace this NOOP stub
+    emitln "# BSR #{name}"
+    emitln "movl $0x0, %eax"
+  else
+    define_variable name # defaults to 0
+    emitln "movl #{name}(%rip), %eax"
+  end
+end
+
 #   <factor> ::= <number> | (<expression>) | <variable>
 def factor
   case
@@ -139,10 +155,7 @@ def factor
     match ")"
     comment ")"
   when is_alpha($lookahead)
-    name = get_name
-    comment name
-    define_variable name # defaults to 0
-    emitln "movl #{name}(%rip), %eax"
+    ident
   else
     num = get_num
     comment num
