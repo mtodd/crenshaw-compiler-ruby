@@ -259,6 +259,20 @@ def expression
   end
 end
 
+# Internal: Parse and handle assigning an expression's value to a variable.
+#
+#   <Ident> = <Expression>
+def assignment
+  name = get_name
+  comment name
+  define_variable name
+  match "="
+  comment "="
+  expression
+  emitln "leaq #{name}(%rip), %rdx"
+  emitln "movl %eax, (%rdx)"
+end
+
 def alloc_stack
   $stackdepth += 1
 
@@ -287,7 +301,7 @@ def main
   alloc_stack
 
   lookahead
-  expression
+  assignment
   return expected("Newline") if $lookahead != "\n"
 
   assembler_footer
