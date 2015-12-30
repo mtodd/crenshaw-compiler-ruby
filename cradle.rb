@@ -69,6 +69,13 @@ def is_digit(c)
   c =~ /[0-9]/
 end
 
+# Internal: Recognize an alphanumeric character.
+#
+# Returns true if the string character is either a digit or an alpha.
+def is_alnum(c)
+  is_alpha(c) || is_digit(c)
+end
+
 def is_addop(c)
   ADDOPS.include?(c)
 end
