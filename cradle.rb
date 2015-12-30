@@ -84,13 +84,16 @@ end
 #
 # Returns the alpha character String (prefixed with an underscore `_`).
 def get_name
-  la = $lookahead
+  token = ""
 
-  return expected("Name") unless is_alpha(la)
+  return expected("Name") unless is_alpha($lookahead)
 
-  lookahead
+  while is_alnum($lookahead)
+    token << $lookahead
+    lookahead
+  end
 
-  "_#{la}"
+  "_#{token}"
 end
 
 # Internal: Get a Number
