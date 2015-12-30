@@ -75,7 +75,7 @@ end
 
 # Internal: Get an Identifier, and looks up the next character.
 #
-# Returns the alpha character String (upcased).
+# Returns the alpha character String (prefixed with an underscore `_`).
 def get_name
   la = $lookahead
 
@@ -83,7 +83,7 @@ def get_name
 
   lookahead
 
-  la.upcase
+  "_#{la}"
 end
 
 # Internal: Get a Number
