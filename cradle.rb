@@ -288,6 +288,7 @@ def main
 
   lookahead
   expression
+  return expected("Newline") if $lookahead != "\n"
 
   assembler_footer
 
