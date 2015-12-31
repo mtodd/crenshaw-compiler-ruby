@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+ADDOPS = %w(+ -)
+
 TAB = "\t"
 
 $input  = STDIN
@@ -50,6 +52,13 @@ end
 # Returns true if the string character is a digit.
 def is_digit(c)
   c =~ /[0-9]/
+end
+
+# Internal: Recognize addition/subtraction operators.
+#
+# Return true if the string character is an addop.
+def is_addop(c)
+  ADDOPS.include?(c)
 end
 
 # Internal: Get an Identifier, and looks up the next character.
