@@ -4,6 +4,19 @@ ADDOPS = %w(+ -)
 
 TAB = "\t"
 
+HEADER = <<-ASM
+.section __TEXT,__text
+.global _main
+_main:
+ASM
+
+FOOTER = <<-ASM
+\t# exit with the result as %eax
+\tmovl %eax, %edi       # set the exit code into %edi
+\tmovl $0x2000001, %eax # system call $1 with $0x2000000 offset
+\tsyscall
+ASM
+
 $input  = STDIN
 $output = STDOUT
 
@@ -105,14 +118,30 @@ def emitln(s, out: $output)
    out.puts
 end
 
-def debug_dump
-  p [:lookahead, $lookahead]
+def assembler_header(out: $output)
+  out.puts HEADER
+end
+
+def assembler_footer(out: $output)
+  out.puts
+  out.puts FOOTER
+end
+
+def init
+  assembler_header
+  lookahead
 end
 
 def main
-  lookahead
+  init
+
+  assembler_footer
 
   debug_dump if ENV.key?('DEBUG')
+end
+
+def debug_dump
+  p [:lookahead, $lookahead]
 end
 
 if $0 == __FILE__
