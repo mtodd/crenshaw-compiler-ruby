@@ -118,6 +118,11 @@ def emitln(s, out: $output)
    out.puts
 end
 
+def comment(s, out: $output)
+  emit("# #{s}", out: out)
+  out.puts
+end
+
 def assembler_header(out: $output)
   out.puts HEADER
 end
