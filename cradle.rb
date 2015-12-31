@@ -47,6 +47,13 @@ def is_alpha(c)
   c =~ /[a-z]/i
 end
 
+# Internal: Recognize an alphanumeric character.
+#
+# Returns true if the string character is an alpha or digit.
+def is_alnum(c)
+  is_alpha(c) || is_digit(c)
+end
+
 # Internal: Recognize a Decimal Digit
 #
 # Returns true if the string character is a digit.
