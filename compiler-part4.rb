@@ -172,17 +172,28 @@ def assembler_footer(out: $output)
   out.puts FOOTER
 end
 
+def factor
+  if $lookahead == "("
+    match "("
+    value = expression
+    match ")"
+    value
+  else
+    get_num
+  end
+end
+
 def term
-  value = get_num
+  value = factor
 
   while MULOPS.include?($lookahead)
     case $lookahead
     when "*"
       match "*"
-      value = value * get_num
+      value = value * factor
     when "/"
       match "/"
-      value = value / get_num
+      value = value / factor
     end
   end
 
