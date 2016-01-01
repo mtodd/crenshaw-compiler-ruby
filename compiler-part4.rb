@@ -199,7 +199,9 @@ def main
   assembler_header
 
   init
-  $output.puts expression
+
+  # $output.puts expression
+  emitln "movl $#{expression}, %eax"
 
   assembler_footer
 
