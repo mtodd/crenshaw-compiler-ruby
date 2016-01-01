@@ -105,7 +105,7 @@ def get_num
 
   lookahead
 
-  la
+  la.to_i
 end
 
 # Internal: Output a String with Tab
@@ -168,6 +168,10 @@ def assembler_footer(out: $output)
   out.puts FOOTER
 end
 
+def expression
+  get_num
+end
+
 def init
   alloc_stack
   lookahead
@@ -177,6 +181,7 @@ def main
   assembler_header
 
   init
+  $output.puts expression
 
   assembler_footer
 
