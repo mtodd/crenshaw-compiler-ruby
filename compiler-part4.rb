@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 ADDOPS = %w(+ -)
+MULOPS = %w(* /)
 
 TAB = "\t"
 
@@ -168,22 +169,39 @@ def assembler_footer(out: $output)
   out.puts FOOTER
 end
 
+def term
+  value = get_num
+
+  while MULOPS.include?($lookahead)
+    case $lookahead
+    when "*"
+      match "*"
+      value = value * get_num
+    when "/"
+      match "/"
+      value = value / get_num
+    end
+  end
+
+  value
+end
+
 def expression
   value =
     if is_addop($lookahead)
       0
     else
-      get_num
+      term
     end
 
   while is_addop($lookahead)
     case $lookahead
     when "+"
       match "+"
-      value += get_num
+      value += term
     when "-"
       match "-"
-      value -= get_num
+      value -= term
     end
   end
 
