@@ -169,7 +169,25 @@ def assembler_footer(out: $output)
 end
 
 def expression
-  get_num
+  value =
+    if is_addop($lookahead)
+      0
+    else
+      get_num
+    end
+
+  while is_addop($lookahead)
+    case $lookahead
+    when "+"
+      match "+"
+      value += get_num
+    when "-"
+      match "-"
+      value -= get_num
+    end
+  end
+
+  value
 end
 
 def init
