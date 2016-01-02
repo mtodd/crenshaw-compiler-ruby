@@ -247,8 +247,13 @@ def main
 
   init
 
-  # $output.puts expression
-  emitln "movl $#{expression}, %eax"
+  until $lookahead == "."
+    assignment
+    match_newline
+  end
+
+  # to exit 0
+  emitln "movl $0, %eax"
 
   assembler_footer
 
