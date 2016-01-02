@@ -190,7 +190,7 @@ def if_statement
   match "i"
   label = next_label
   condition
-  emitln "BEQ #{label}"
+  emitln "je #{label}"
   block_statement
   match "e"
   emit_label label
