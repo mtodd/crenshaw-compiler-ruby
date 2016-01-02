@@ -169,7 +169,9 @@ def assembler_footer(out: $output)
 end
 
 def other
-  emitln get_name
+  name = get_name
+  define_variable name
+  emitln "movl #{name}(%rip), %eax"
 end
 
 def init
