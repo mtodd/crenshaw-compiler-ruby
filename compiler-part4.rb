@@ -227,6 +227,12 @@ def expression
   value
 end
 
+def assignment
+  name = get_name
+  match "="
+  $var_table[name] = expression
+end
+
 def init
   alloc_stack
   lookahead
