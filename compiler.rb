@@ -245,6 +245,23 @@ def while_statement
   emit_label end_label
 end
 
+#   LOOP <block> ENDLOOP
+#
+# becomes
+#
+#   LOOP           { L = NewLabel;
+#                    PostLabel(L) }
+#   <block>
+#   ENDLOOP        { Emit(BRA L }
+def loop_statement
+  match "p"
+  label = next_label
+  emit_label label
+  block_statement
+  match "e"
+  emitln "jmp #{label}"
+end
+
 def condition
   emitln "cmpl $0x0, %eax"
 end
@@ -257,6 +274,8 @@ def block_statement
       if_statement
     when "w"
       while_statement
+    when "p"
+      loop_statement
     else
       other
     end
