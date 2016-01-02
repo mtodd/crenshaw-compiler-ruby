@@ -168,6 +168,10 @@ def assembler_footer(out: $output)
   out.puts FOOTER
 end
 
+def other
+  emitln get_name
+end
+
 def init
   alloc_stack
   lookahead
@@ -177,6 +181,8 @@ def main
   assembler_header
 
   init
+
+  other
 
   assembler_footer
 
