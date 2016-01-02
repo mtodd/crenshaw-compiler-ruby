@@ -184,7 +184,7 @@ def main
 end
 
 def debug_dump
-  p [:lookahead, $lookahead]
+  STDERR.puts [:lookahead, $lookahead].inspect
 end
 
 if $0 == __FILE__
