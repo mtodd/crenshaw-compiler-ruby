@@ -206,7 +206,7 @@ def block_statement
     case $lookahead
     when "i"
       if_statement
-    when "o"
+    else
       other
     end
   end
