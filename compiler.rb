@@ -222,6 +222,29 @@ def if_statement
   emit_label end_label
 end
 
+#   WHILE <condition> <block> ENDWHILE
+#
+# becomes
+#
+#   WHILE          { L1 = NewLabel;
+#                    PostLabel(L1) }
+#   <condition>    { Emit(BEQ L2) }
+#   <block>
+#   ENDWHILE       { Emit(BRA L1);
+#                    PostLabel(L2) }
+def while_statement
+  match "w"
+  begin_label = next_label
+  end_label = next_label
+  emit_label begin_label
+  condition
+  emitln "je #{end_label}"
+  block_statement
+  match "e"
+  emitln "jmp #{begin_label}"
+  emit_label end_label
+end
+
 def condition
   emitln "cmpl $0x0, %eax"
 end
@@ -232,6 +255,8 @@ def block_statement
     case $lookahead
     when "i"
       if_statement
+    when "w"
+      while_statement
     else
       other
     end
