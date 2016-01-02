@@ -196,6 +196,10 @@ def if_statement
   emit_label label
 end
 
+def condition
+  emitln "<condition>"
+end
+
 # Recognize and Translate a Statement Block
 def block_statement
   until $lookahead == "e"
