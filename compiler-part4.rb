@@ -57,6 +57,10 @@ def match(x)
   end
 end
 
+def newline
+  lookahead if $lookahead == "\n"
+end
+
 # Internal: Recognize an Alpha Character.
 #
 # Returns true if the string character is an alpha.
