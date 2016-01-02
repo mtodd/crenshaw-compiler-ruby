@@ -186,6 +186,8 @@ def other
 end
 
 # Recognize and Translate an IF Construct
+#
+#   IF <condition> <block> [ ELSE <block>] ENDIF
 def if_statement
   match "i"
   label = next_label
