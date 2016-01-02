@@ -58,7 +58,7 @@ def match(x)
 end
 
 def match_newline
-  lookahead if $lookahead == "\n"
+  lookahead while $lookahead == "\n"
 end
 
 # Internal: Recognize an Alpha Character.
