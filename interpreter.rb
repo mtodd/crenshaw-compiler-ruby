@@ -5,23 +5,8 @@ MULOPS = %w(* /)
 
 TAB = "\t"
 
-HEADER = <<-ASM
-.section __TEXT,__text
-.global _main
-_main:
-ASM
-
-FOOTER = <<-ASM
-\t# exit with the result as %eax
-\tmovl %eax, %edi       # set the exit code into %edi
-\tmovl $0x2000001, %eax # system call $1 with $0x2000000 offset
-\tsyscall
-ASM
-
 $input  = STDIN
 $output = STDOUT
-
-$stackdepth = 0
 
 $lookahead = nil
 $var_table = Hash.new { |h,k| h[k] = 0 }
@@ -129,53 +114,9 @@ def emitln(s, out: $output)
    out.puts
 end
 
-def emit_section(section, out: $output)
-  case section
-  when :data
-    out.print(".section __DATA,__data")
-  when :text
-    out.print(".section __TEXT,__text")
-  else
-    expected ":data, :text section"
-  end
-  out.puts
-end
-
 def comment(s, out: $output)
   emit("# #{s}", out: out)
   out.puts
-end
-
-# FIXME: figure out a better way to define variables when needed, see if we can
-# define the label/symbol without setting a default value, and maybe validate
-# that they've been assigned before being used in the first place.
-def define_variable(name)
-  emit_section :data
-  emit "#{name}: .long 0x0\n"
-  emit_section :text
-end
-
-def alloc_stack
-  $stackdepth += 1
-
-  comment "make space for 8byte (64bit) value at #{$stackdepth}"
-  emitln "subq $0x8, %rsp"
-end
-
-def free_stack
-  comment "free space for 8byte (64bit) value at #{$stackdepth}"
-  emitln "addq $0x8, %rsp"
-
-  $stackdepth -= 1
-end
-
-def assembler_header(out: $output)
-  out.puts HEADER
-end
-
-def assembler_footer(out: $output)
-  out.puts
-  out.puts FOOTER
 end
 
 def input(input: $input)
@@ -248,13 +189,10 @@ def assignment
 end
 
 def init
-  alloc_stack
   lookahead
 end
 
 def main
-  assembler_header
-
   init
 
   until $lookahead == "."
@@ -270,12 +208,9 @@ def main
     match_newline
   end
 
-  # to exit 0
-  emitln "movl $0, %eax"
-
-  assembler_footer
-
   debug_dump if ENV.key?('DEBUG')
+
+  exit 0
 end
 
 def debug_dump
