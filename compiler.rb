@@ -21,6 +21,7 @@ $input  = STDIN
 $output = STDOUT
 
 $lookahead = nil
+$label_count = 0
 $stackdepth = 0
 
 # Internal: Read a character from input stream
@@ -134,6 +135,16 @@ end
 def comment(s, out: $output)
   emit("# #{s}", out: out)
   out.puts
+end
+
+def next_label
+  label = "_l#{$label_count}"
+  $label_count += 1
+  label
+end
+
+def emit_label(label, out: $output)
+  out.puts "#{label}:"
 end
 
 # FIXME: figure out a better way to define variables when needed, see if we can
