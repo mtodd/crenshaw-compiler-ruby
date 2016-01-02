@@ -5,14 +5,15 @@ MULOPS = %w(* /)
 
 TAB = "\t"
 
-$input  = STDIN
+$srcin = ARGF
+$input = STDIN
 $output = STDOUT
 
 $lookahead = nil
 $var_table = Hash.new { |h,k| h[k] = 0 }
 
 # Internal: Read a character from input stream
-def lookahead(input: $input)
+def lookahead(input: $srcin)
   $lookahead = input.getc
 end
 
@@ -121,7 +122,7 @@ end
 
 def input(input: $input)
   match "?"
-  $var_table[get_name] = input.readline
+  $var_table[get_name] = input.readline.chomp
 end
 
 def output(out: $output)
