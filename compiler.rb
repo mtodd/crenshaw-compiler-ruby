@@ -228,7 +228,7 @@ end
 
 # Recognize and Translate a Statement Block
 def block_statement
-  until $lookahead == "e"
+  until %w(e l).include?($lookahead)
     case $lookahead
     when "i"
       if_statement
