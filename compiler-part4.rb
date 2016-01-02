@@ -21,8 +21,10 @@ ASM
 $input  = STDIN
 $output = STDOUT
 
-$lookahead = nil
 $stackdepth = 0
+
+$lookahead = nil
+$var_table = Hash.new { |h,k| h[k] = 0 }
 
 # Internal: Read a character from input stream
 def lookahead(input: $input)
@@ -241,7 +243,8 @@ def main
 end
 
 def debug_dump
-  p [:lookahead, $lookahead]
+  STDERR.puts [:lookahead, $lookahead].inspect
+  STDERR.puts [:var_table, $var_table].inspect
 end
 
 if $0 == __FILE__
