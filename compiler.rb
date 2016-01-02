@@ -262,13 +262,32 @@ def loop_statement
   emitln "jmp #{label}"
 end
 
+#   REPEAT <block> UNTIL <condition>
+#
+# becomes
+#
+#   REPEAT         { L = NewLabel;
+#                    PostLabel(L) }
+#   <block>
+#   UNTIL
+#   <condition>    { Emit(BEQ L) }
+def repeat_statement
+  match "r"
+  label = next_label
+  emit_label label
+  block_statement
+  match "u"
+  condition
+  emitln "je #{label}"
+end
+
 def condition
   emitln "cmpl $0x0, %eax"
 end
 
 # Recognize and Translate a Statement Block
 def block_statement
-  until %w(e l).include?($lookahead)
+  until %w(e l u).include?($lookahead)
     case $lookahead
     when "i"
       if_statement
@@ -276,6 +295,8 @@ def block_statement
       while_statement
     when "p"
       loop_statement
+    when "r"
+      repeat_statement
     else
       other
     end
