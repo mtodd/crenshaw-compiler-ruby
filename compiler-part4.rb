@@ -178,6 +178,16 @@ def assembler_footer(out: $output)
   out.puts FOOTER
 end
 
+def input(input: $input)
+  match "?"
+  $var_table[get_name] = input.readline
+end
+
+def output(out: $output)
+  match "!"
+  out.puts $var_table[get_name]
+end
+
 def factor
   case
   when $lookahead == "("
@@ -248,7 +258,15 @@ def main
   init
 
   until $lookahead == "."
-    assignment
+    case $lookahead
+    when "?"
+      input
+    when "!"
+      output
+    else
+      assignment
+    end
+
     match_newline
   end
 
