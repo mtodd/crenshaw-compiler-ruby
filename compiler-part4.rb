@@ -175,11 +175,14 @@ def assembler_footer(out: $output)
 end
 
 def factor
-  if $lookahead == "("
+  case
+  when $lookahead == "("
     match "("
     value = expression
     match ")"
     value
+  when is_alpha($lookahead)
+    $var_table[get_name]
   else
     get_num
   end
