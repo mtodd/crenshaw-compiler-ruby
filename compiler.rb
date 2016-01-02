@@ -188,14 +188,38 @@ end
 # Recognize and Translate an IF Construct
 #
 #   IF <condition> <block> [ ELSE <block>] ENDIF
+#
+# becomes
+#
+#   IF
+#   <condition>    { L1 = NewLabel;
+#                    L2 = NewLabel;
+#                    Emit(BEQ L1) }
+#   <block>
+#   ELSE           { Emit(BRA L2);
+#                    PostLabel(L1) }
+#   <block>
+#   ENDIF          { PostLabel(L2) }
 def if_statement
   match "i"
-  label = next_label
   condition
-  emitln "je #{label}"
+
+  if_label = next_label
+  end_label = if_label
+
+  emitln "je #{if_label}"
   block_statement
+
+  if $lookahead == "l"
+    match "l"
+    end_label = next_label
+    emitln "jmp #{end_label}"
+    emit_label if_label
+    block_statement
+  end
+
   match "e"
-  emit_label label
+  emit_label end_label
 end
 
 def condition
