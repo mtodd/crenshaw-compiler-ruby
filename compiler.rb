@@ -174,6 +174,21 @@ def other
   emitln "movl #{name}(%rip), %eax"
 end
 
+# Recognize and Translate a Statement Block
+def block_statement
+  until $lookahead == "e"
+    other
+  end
+end
+
+#   <program> ::= <block> END
+#   <block> ::= [ <statement> ]*
+def program
+  block_statement
+  return expected("End") unless $lookahead == "e"
+  comment "END" # 68k has an "END" instruction
+end
+
 def init
   alloc_stack
   lookahead
@@ -184,7 +199,7 @@ def main
 
   init
 
-  other
+  program
 
   assembler_footer
 
