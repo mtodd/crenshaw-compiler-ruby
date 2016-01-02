@@ -57,7 +57,7 @@ def match(x)
   end
 end
 
-def newline
+def match_newline
   lookahead if $lookahead == "\n"
 end
 
