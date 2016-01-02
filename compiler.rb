@@ -185,10 +185,26 @@ def other
   emitln "movl #{name}(%rip), %eax"
 end
 
+# Recognize and Translate an IF Construct
+def if_statement
+  match "i"
+  label = next_label
+  condition
+  emitln "BEQ #{label}"
+  block_statement
+  match "e"
+  emit_label label
+end
+
 # Recognize and Translate a Statement Block
 def block_statement
   until $lookahead == "e"
-    other
+    case $lookahead
+    when "i"
+      if_statement
+    when "o"
+      other
+    end
   end
 end
 
