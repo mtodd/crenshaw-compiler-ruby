@@ -197,7 +197,7 @@ def if_statement
 end
 
 def condition
-  emitln "<condition>"
+  emitln "cmpl $0x0, %eax"
 end
 
 # Recognize and Translate a Statement Block
